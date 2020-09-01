@@ -53,14 +53,14 @@ export default {
   }
   .item-icon img,
   .item-active-icon img{
-    width: 24px;
-    height: 24px;
-    margin-top: 5px;
+    width: 6.2vw;
+    height: 6.2vw;
+    margin-top: 0.667vw;
     vertical-align: middle;
   }
   .item-text{
-    font-size: 12px;
-    margin-top: 3px;
+    font-size: 2.667vw;
+    margin-top: 0.4vw;
     color: #333333;
   }
 </style>

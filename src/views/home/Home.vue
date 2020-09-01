@@ -1,85 +1,57 @@
 <template>
  <div id="home">
-    <nav-bar class="home-center">
-      <div slot="center">购物街</div>
+    <nav-bar class="home-bar">
+      <div slot="left" >
+        <img class="home-left" src="@/assets/img/home/logo@2x.png" alt="">
+      </div>
+      <div slot="center" class="home-center" @click="searchPath">
+        <span>
+          <img class="home-imgs" src="@/assets/img/home/ss@2x.png" alt="">
+        </span>
+        <input type="text" placeholder="搜游戏或礼包"/>
+      </div>
+      <div slot="right">
+        <img class="right-image" src="@/assets/img/home/logo@2x.png" alt="">
+      </div>
     </nav-bar>
-    <tabControl :title="title" @tabClick="tabClick" class="tab-control" v-show="isTab"></tabControl>
-
-    <scroll class="contents" ref="scroll" :probe-type = '3' @scroll="backScorll" :pull-up-load="true" @pullingUp="pullingUp">
-      <home-swiper :banners="banners" @swiperImg="swiperImg"></home-swiper>
-      <homeView :recommends="recommends"></homeView>
-      <homeFerture></homeFerture>
-      <tabControl :title="title" @tabClick="tabClick" class="tab-control" ref="tabControl"></tabControl>
-      <goodList :goods= 'showGoods'></goodList>
-      <ul @click="detailClick">
-      <li>22</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>22</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li><li>22</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li><li>22</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>22</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li><li>22</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li><li>22</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li><li>22</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-      <li>2</li>
-     </ul>
+    <scroll class="contents" ref="scroll" :probe-type = '3' :pull-up-load="true" @pullingUp="loadMore">
+      <home-swiper :banners = banners ></home-swiper>
+      <home-tabs></home-tabs>
+      <div class="home-img">
+        <img src="@/assets/img/home/xdd@2x.png" alt="">
+        <div class="uesrInfo">
+          <img src="@/assets/img/home/logo@2x.png" alt="">
+          <div>小灰灰: 成功租用账号 <span>一小时</span></div>
+        </div>
+      </div>
+      <home-list></home-list>
+      <home-root>
+        <div class="title">
+         <div class="phone clickActive">热租账号</div>
+         <div class="img">
+             <img src="@/assets/img/home/gd@2x.png" alt="">
+         </div>
+     </div>
+      </home-root>
     </scroll>
-    <backTop @click.native="backTop" v-show="isShow"></backTop>
+    <main-tab-bar></main-tab-bar>
  </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import NavBar from '../../components/common/navbar/NavBar'
-import tabControl from '../../components/content/tabControl/tabControl'
-import goodList from '../../components/content/goods/goodList'
-import Scroll from '../../components/common/scroll/Scroll'
-import backTop from '../../components/content/backTop/backTop'
-
+import NavBar from '@/components/common/navbar/NavBar'
+import Scroll from '@/components/common/scroll/Scroll'
 import homeSwiper from './childrens/homeSwiper'
-import homeView from './childrens/homeView'
-import homeFerture from './childrens/homeFeature'
-
-import { getHomeList, getHomeGoods } from '../../network/home'
+import homeTabs from './childrens/homeTabs'
+import homeList from './childrens/homeList'
+import homeRoot from './childrens/homeRoot'
+import MainTabBar from '@/components/content/mainTabbar/MainTabbar'
 
 export default {
   name: 'Home',
   data () {
     return {
       banners: [],
-      recommends: [],
-      title: ['流行', '新款', '精选'],
-      goods: {
-        pop: { page: 0, list: [] },
-        news: { page: 0, list: [] },
-        sell: { page: 0, list: [] }
-      },
-      currentType: 'pop',
       isShow: false,
       isTab: false,
       taboffsetTop: 0,
@@ -88,80 +60,46 @@ export default {
   },
   components: {
     NavBar,
-    tabControl,
     homeSwiper,
-    homeView,
-    homeFerture,
-    goodList,
+    homeTabs,
+    homeList,
+    homeRoot,
     Scroll,
-    backTop
+    MainTabBar
   },
   created () {
+    this.getHomeSwiper()
     // 请求数据
-    this.getHomeMuList()
-    // 请求商品数据
-    this.getHomeMuGoods('pop')
-    // this.getHomeMuGoods('news')
-    // this.getHomeMuGoods('sell')
   },
   mounted () {
-    const refresh = this.debounce(this.$refs.scroll.refresh())
-    this.$bus.$on('itemImg', () => {
-      refresh()
-    })
+
   },
   methods: {
-    //
-    detailClick () {
-      this.$router.push('/detail/' + '1jw0sr2')
-    },
-    //
-    getHomeMuList () {
-      getHomeList().then(res => {
-        console.log(res)
-        this.banners = res.data.banner.list
-        this.recommends = res.data.recommend.list
+    // async getHomeSwiper () {
+    //   const { res } = await this.$get('/home/multidata')
+    //   console.log(res, 'hahh')
+    getHomeSwiper () {
+      this.$get('/home/multidata').then(res => {
+        console.log(res, 'hahh')
+        this.banners = res.banner.list
       })
     },
-    getHomeMuGoods (type) {
-      const page = this.goods[type].page + 1
-      getHomeGoods(type, page).then(res => {
-        console.log(res, 123)
-        this.goods[type].list.push(...res.data.list)
-        this.goods[type].page += 1
-        // 完成上拉加载更多
-        this.$refs.scroll.finishPullUp()
-      // this.goods[type] = [...this.goods[type], ...res.data.list]
-      })
-    },
+    // backTop () {
+    // console.log(123)
+    // this.$refs.scroll.scrollTo(0, 0, 600)
+    // },
+    // backScorll (position) {
+    //   this.isShow = -(position.y) > 1000
 
-    tabClick (index) {
-      console.log(index)
-      switch (index) {
-        case 0:
-          this.currentType = 'pop'
-          break
-        case 1:
-          this.currentType = 'news'
-          break
-        case 2:
-          this.currentType = 'sell'
-          break
-      }
-    },
-    backTop () {
-      // console.log(123)
-      this.$refs.scroll.scrollTo(0, 0, 600)
-    },
-    backScorll (position) {
-      this.isShow = -(position.y) > 1000
-
-      this.isTab = -(position.y) > this.taboffsetTop
+    //   this.isTab = -(position.y) > this.taboffsetTop
+    // },
+    loadMore () {
+      console.log('hhh')
     },
     // 上拉加载更多
-    pullingUp () {
-      this.getHomeGoods(this.currentType)
-    },
+    // pullingUp () {
+    // this.getHomeGoods(this.currentType)
+    // },
     // 防抖函数
     debounce (fuc, delay) {
       let times = null
@@ -172,15 +110,14 @@ export default {
         }, delay)
       }
     },
-    swiperImg () {
-      // 吸顶的取值
-      this.taboffsetTop = this.$refs.tabControl.$el.offsetTop
+    searchPath () {
+      this.$router.push('/search')
     }
   },
   computed: {
-    showGoods () {
-      return this.goods[this.currentType].list
-    }
+    // showGoods () {
+    //   return this.goods[this.currentType].list
+    // }
   },
   activated () {
     this.$refs.scroll.scrollTo(0, this.setY, 0)
@@ -194,34 +131,88 @@ export default {
 <style>
 #home {
   height: 100vh;
-  /* position:fixed; */
-  /* margin-top: 44px; */
+}
+.home-bar{
+  width: 100%;
+  height: 11.733vw;
+}
+.home-left{
+  width: 9.067vw;
+  height: 9.067vw;
+  margin-left: 6.667vw;
 }
 .home-center{
-  background-color: var(--color-tint);
-  color: white;
-  /* position: fixed;
-  top: 0;
+  width: 61.067vw;
+  height: 9.067vw;
+  background-color: #EBEEF7;
+  border-radius: 5.333vw;
+  border: 0.133vw solid #EBEEF7;
+  margin-top: 0.8vw;
+  display: flex;
+}
+.home-center span{
+  width:10.667vw ;
+  /* height: 100%; */
+  margin-top: 2vw;
+}
+.home-center input{
+  flex: 1;
+  background-color: #EBEEF7;
+  border: none;
+  border-radius: 5.333vw;
+  color: #B3BCD9;
+  font-size: 3.467vw;
+  text-indent: .5em;
+    /* background: transparent; */
+
+    /* resize:none; */
+    outline:none;  /*清除选中效果的默认蓝色边框 */
+    -webkit-appearance:none;  /*清除浏览器默认的样式 */
+    /* line-height: normal; */
+}
+.home-center .home-imgs{
+  width: 4.8vw;
+  height: 4.8vw;
+}
+.home-img{
   width: 100%;
-  z-index: 999; */
+  height: 10.667vw;
+  background-color: #EFF2F9;
+  border-radius: 0 6.667vw 0 6.667vw;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8.267vw;
+}
+.home-img img{
+  height: 5.333vw;
+  margin: 0 2.933vw ;
+}
+.uesrInfo{
+  display: flex;
+  align-items: center;
+}
+.uesrInfo> div{
+  font-size: 2.933vw;
+  color: #000;
+}
+.uesrInfo> div span{
+  color:#F67578 ;
 }
 .tab-control{
- /* position: sticky; */
- /* top: 44px; */
  position: relative;
  z-index: 3;
 }
-/* .contents{
-  height: calc(100% - 93px);
-  margin-top: 44px;
-  overflow: hidden;
-} */
 .contents{
   position: absolute;
-  top: 44px;
-  bottom: 49px;
+  top: 14.133vw;
+  bottom: 12vw;
   left: 0;
-  right: 0;
   overflow: hidden;
+  padding:0 3.333vw;
+}
+.right-image{
+  margin-left: 3.733vw;
+  width: 9.333vw;
+  height: 9.333vw;
 }
 </style>

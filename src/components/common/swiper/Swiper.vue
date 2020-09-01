@@ -213,6 +213,8 @@ export default {
   #hy-swiper {
     overflow: hidden;
     position: relative;
+    border-radius: 14px;
+    /* margin-top: 2.667vw; */
   }
 
   .swiper {
@@ -224,19 +226,19 @@ export default {
     justify-content: center;
     position: absolute;
     width: 100%;
-    bottom: 8px;
+    bottom: 1.067vw;
   }
 
   .indi-item {
     box-sizing: border-box;
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
+    width: 1.067vw;
+    height: 1.067vw;
+    border-radius: 0.533vw;
     background-color: #fff;
-    line-height: 8px;
+    line-height: 1.067vw;
     text-align: center;
-    font-size: 12px;
-    margin: 0 5px;
+    font-size: 1.6vw;
+    margin: 0 0.667vw;
   }
 
   .indi-item.active {

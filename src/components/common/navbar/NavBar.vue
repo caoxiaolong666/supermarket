@@ -13,12 +13,12 @@ export default {
 <style >
   .nav-bar {
     display: flex;
-    height: 44px;
-    line-height: 44px;
+    height: 44vw;
+    line-height: 0;
     box-shadow:0 1px 1px rgba(100, 100, 100,.2);
   }
   .left,.right{
-    width: 60px;
+    width: 60vw;
   }
   .center{
     flex:1;

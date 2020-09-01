@@ -12,9 +12,9 @@ export default {
     #tab-bar {
         /* 本身样式 */
         background-color: #f6f6f6;
-        height: 49px;
-        border-top: 1px solid #eee;
-        box-shadow: 0 -1px 1px rgba(150 150 150 .08);
+        height: 12vw;
+        border-top: 0.133vw solid #eee;
+        box-shadow: 0 -0.133vw 0.133vw rgba(150 150 150 .08);
 
     /* 定位 */
     position: fixed;
